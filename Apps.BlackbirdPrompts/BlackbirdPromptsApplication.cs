@@ -1,12 +1,12 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.App;
+namespace Apps.BlackbirdPrompts;
 
-public class Application : IApplication
+public class BlackbirdPromptsApplication : IApplication
 {
     public string Name
     {
-        get => "App";
+        get => "Blackbird Prompts";
         set { }
     }
 
