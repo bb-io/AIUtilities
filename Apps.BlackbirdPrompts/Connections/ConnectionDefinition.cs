@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
-namespace Apps.App.Connections;
+namespace Apps.BlackbirdPrompts.Connections;
 
 public class ConnectionDefinition : IConnectionDefinition
 {
@@ -9,7 +9,7 @@ public class ConnectionDefinition : IConnectionDefinition
     {
         new()
         {
-            Name = "Developer API key",
+            Name = "No auth",
             AuthenticationType = ConnectionAuthenticationType.Undefined,
             ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>
@@ -19,8 +19,5 @@ public class ConnectionDefinition : IConnectionDefinition
     };
 
     public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
-        Dictionary<string, string> values) =>
-        values.Select(x =>
-                new AuthenticationCredentialsProvider(AuthenticationCredentialsRequestLocation.None, x.Key, x.Value))
-            .ToList();
+        Dictionary<string, string> values) => Enumerable.Empty<AuthenticationCredentialsProvider>();
 }
