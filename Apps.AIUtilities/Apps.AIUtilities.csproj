@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Product>AI Utilities</Product>
         <Description>Utilities that can be used in conjunction with different AI apps</Description>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <AssemblyName>Apps.AIUtilities</AssemblyName>
     </PropertyGroup>
 
