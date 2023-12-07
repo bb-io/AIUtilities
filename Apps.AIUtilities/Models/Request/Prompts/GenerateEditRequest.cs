@@ -1,7 +1,7 @@
 using Blackbird.Applications.Sdk.Common;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 
-namespace Apps.BlackbirdPrompts.Models.Request.Prompts;
+namespace Apps.AIUtilities.Models.Request.Prompts;
 
 public class GenerateEditRequest
 {

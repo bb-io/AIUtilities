@@ -1,10 +1,10 @@
-using Apps.BlackbirdPrompts.Models.Request.Interpret;
-using Apps.BlackbirdPrompts.Models.Response.Interpret;
+using Apps.AIUtilities.Models.Request.Interpret;
+using Apps.AIUtilities.Models.Response.Interpret;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Newtonsoft.Json;
 
-namespace Apps.BlackbirdPrompts.Actions;
+namespace Apps.AIUtilities.Actions;
 
 [ActionList]
 public class InterpretActions

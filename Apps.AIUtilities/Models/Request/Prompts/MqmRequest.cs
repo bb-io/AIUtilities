@@ -1,6 +1,6 @@
 using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.BlackbirdPrompts.Models.Request.Prompts;
+namespace Apps.AIUtilities.Models.Request.Prompts;
 
 public class MqmRequest : TranslationRequest
 {

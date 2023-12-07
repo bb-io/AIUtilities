@@ -1,6 +1,6 @@
 using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.BlackbirdPrompts.Models.Request.Interpret;
+namespace Apps.AIUtilities.Models.Request.Interpret;
 
 public class InterpretMqmAnalysisRequest
 {

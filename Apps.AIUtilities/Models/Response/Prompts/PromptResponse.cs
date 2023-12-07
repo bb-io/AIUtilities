@@ -1,3 +1,3 @@
-namespace Apps.BlackbirdPrompts.Models.Response.Prompts;
+namespace Apps.AIUtilities.Models.Response.Prompts;
 
 public record PromptResponse(string Prompt);

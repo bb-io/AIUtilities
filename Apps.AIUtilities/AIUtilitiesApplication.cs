@@ -1,8 +1,8 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.BlackbirdPrompts;
+namespace Apps.AIUtilities;
 
-public class AIUtilitiesApplication : IApplication
+public class AiUtilitiesApplication : IApplication
 {
     public string Name
     {

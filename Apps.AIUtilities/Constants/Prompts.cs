@@ -1,4 +1,4 @@
-namespace Apps.BlackbirdPrompts.Constants;
+namespace Apps.AIUtilities.Constants;
 
 public static class Prompts
 {

@@ -1,12 +1,12 @@
 using System.Text;
-using Apps.BlackbirdPrompts.Constants;
-using Apps.BlackbirdPrompts.Models.Request.Prompts;
-using Apps.BlackbirdPrompts.Models.Response.Prompts;
+using Apps.AIUtilities.Constants;
+using Apps.AIUtilities.Models.Request.Prompts;
+using Apps.AIUtilities.Models.Response.Prompts;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 
-namespace Apps.BlackbirdPrompts.Actions;
+namespace Apps.AIUtilities.Actions;
 
 [ActionList]
 public class PromptActions

@@ -1,7 +1,7 @@
 using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
-namespace Apps.BlackbirdPrompts.Models.Response.Interpret;
+namespace Apps.AIUtilities.Models.Response.Interpret;
 
 public class MqmAnalysis
 {

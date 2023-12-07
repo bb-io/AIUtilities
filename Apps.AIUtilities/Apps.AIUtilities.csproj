@@ -4,11 +4,10 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Product>AI Utils</Product>
+        <Product>AI Utilities</Product>
         <Description>Utilities that can be used in conjunction with different AI apps</Description>
         <Version>1.1.0</Version>
-        <AssemblyName>Apps.AIUtils</AssemblyName>
-        <RootNamespace>Apps.BlackbirdPrompts</RootNamespace>
+        <AssemblyName>Apps.AIUtilities</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
