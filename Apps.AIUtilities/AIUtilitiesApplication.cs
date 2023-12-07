@@ -2,11 +2,11 @@
 
 namespace Apps.BlackbirdPrompts;
 
-public class BlackbirdPromptsApplication : IApplication
+public class AIUtilitiesApplication : IApplication
 {
     public string Name
     {
-        get => "Blackbird Prompts";
+        get => "AI Utilities";
         set { }
     }
 

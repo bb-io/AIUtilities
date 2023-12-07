@@ -4,10 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Product>Blackbird Prompts</Product>
-        <Description>Prompt builder for seamless interactions with AI services</Description>
-        <Version>1.0.0</Version>
-        <AssemblyName>Apps.BlackbirdPrompts</AssemblyName>
+        <Product>AI Utils</Product>
+        <Description>Utilities that can be used in conjunction with different AI apps</Description>
+        <Version>1.1.0</Version>
+        <AssemblyName>Apps.AIUtils</AssemblyName>
+        <RootNamespace>Apps.BlackbirdPrompts</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

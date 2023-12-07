@@ -1,7 +1,7 @@
 using System.Text;
 using Apps.BlackbirdPrompts.Constants;
-using Apps.BlackbirdPrompts.Models.Request;
-using Apps.BlackbirdPrompts.Models.Response;
+using Apps.BlackbirdPrompts.Models.Request.Prompts;
+using Apps.BlackbirdPrompts.Models.Response.Prompts;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
@@ -11,6 +11,8 @@ namespace Apps.BlackbirdPrompts.Actions;
 [ActionList]
 public class PromptActions
 {
+    private const string PromptSeparator = ";;";
+
     [Action("Summary prompt", Description = "Get prompt for summarizing text")]
     public PromptResponse Summary([ActionParameter] TextRequest input)
     {
@@ -21,17 +23,20 @@ public class PromptActions
     }
 
     [Action("Generate edit prompt", Description = "Get prompt for editing the input text given an instructions")]
-    public SystemAndUserPromptResponse GenerateEdit([ActionParameter] GenerateEditRequest input)
+    public PromptResponse GenerateEdit([ActionParameter] GenerateEditRequest input)
     {
         var promptText = BuildPromptFromInputs(input.Text, input.TextFile) ??
                          throw new("Both Text and File inputs can't be empty");
 
-        return new(Prompts.GenerateEditSystem, string.Format(Prompts.GenerateEditUser, promptText, input.Instructions));
+        var systemPrompt = Prompts.GenerateEditSystem;
+        var userPrompt = string.Format(Prompts.GenerateEditUser, promptText, input.Instructions);
+
+        return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 
     [Action("Post-edit MT prompt",
         Description = "Get prompt for reviewing MT translated text and generating a post-edited version")]
-    public SystemAndUserPromptResponse PostEditMt([ActionParameter] PostEditMtRequest input)
+    public PromptResponse PostEditMt([ActionParameter] PostEditMtRequest input)
     {
         var systemPrompt = input.AdditionalPrompt is null
             ? Prompts.PostEditMtSystem
@@ -43,12 +48,13 @@ public class PromptActions
         var targetTextPrompt = BuildPromptFromInputs(input.TargetText, input.TargetTextFile) ??
                                throw new("Both Target text and Target text file inputs can't be empty");
 
-        return new(systemPrompt, string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt));
+        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt);
+        return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 
     [Action("Find translation issues prompt",
         Description = "Get prompt for reviewing text translation and generating a comment with the issue description")]
-    public SystemAndUserPromptResponse FindTranslationIssues([ActionParameter] TranslationRequest input)
+    public PromptResponse FindTranslationIssues([ActionParameter] TranslationRequest input)
     {
         var sourceLanguagePart = input.SourceLanguage != null ? $"written in {input.SourceLanguage} " : string.Empty;
         var targetLanguagePart = input.TargetLanguage != null ? $"written in {input.TargetLanguage}" : string.Empty;
@@ -63,19 +69,20 @@ public class PromptActions
         var targetTextPrompt = BuildPromptFromInputs(input.TargetText, input.TargetTextFile) ??
                                throw new("Both Target text and Target text file inputs can't be empty");
 
-        return new(systemPrompt, string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt));
+        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt);
+        return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 
     [Action("MQM report prompt",
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form.")]
-    public SystemAndUserPromptResponse MqmReport([ActionParameter] MqmRequest input)
+    public PromptResponse MqmReport([ActionParameter] MqmRequest input)
         => GetMqmPrompt(input, Prompts.MqmReportSystem);
 
     [Action("MQM dimension values prompt",
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form, namely the scores (between 1 and 10) of each dimension.")]
-    public SystemAndUserPromptResponse MqmDimensionValues([ActionParameter] MqmRequest input)
+    public PromptResponse MqmDimensionValues([ActionParameter] MqmRequest input)
         => GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem);
 
     [Action("Translate prompt", Description = "Get prompt for localizing the provided text")]
@@ -108,7 +115,7 @@ public class PromptActions
         return string.Join(" ", promptTextParts);
     }
 
-    private SystemAndUserPromptResponse GetMqmPrompt(MqmRequest input, string systemPromptPart)
+    private PromptResponse GetMqmPrompt(MqmRequest input, string systemPromptPart)
     {
         var systemPrompt = input.AdditionalPrompt is null
             ? systemPromptPart
@@ -129,6 +136,6 @@ public class PromptActions
         var userPrompt = string.Format(Prompts.MqmUser, sourceLanguagePrompt, sourceTextPrompt, targetTextPrompt,
             targetLanguagePrompt, targetAudiencePrompt);
 
-        return new(systemPrompt, userPrompt);
+        return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 }
