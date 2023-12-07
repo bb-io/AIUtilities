@@ -9,6 +9,7 @@ namespace Apps.AIUtilities.Actions;
 [ActionList]
 public class InterpretActions
 {
+    [Action("Interpret MQM Analysis", Description = "Interpret AI response of MQM analysis")]
     public MqmAnalysis InterpretMqmAnalysis([ActionParameter] InterpretMqmAnalysisRequest input)
     {
         try
