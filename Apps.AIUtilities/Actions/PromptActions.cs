@@ -1,5 +1,6 @@
 using System.Text;
 using Apps.AIUtilities.Constants;
+using Apps.AIUtilities.Enums;
 using Apps.AIUtilities.Models.Request.Prompts;
 using Apps.AIUtilities.Models.Response.Prompts;
 using Blackbird.Applications.Sdk.Common;
@@ -83,7 +84,7 @@ public class PromptActions
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form, namely the scores (between 1 and 10) of each dimension.")]
     public PromptResponse MqmDimensionValues([ActionParameter] MqmRequest input)
-        => GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem);
+        => new($"{GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem).Prompt}{PromptSeparator}{FileFormat.Json}");
 
     [Action("Translate prompt", Description = "Get prompt for localizing the provided text")]
     public PromptResponse Translate([ActionParameter] TranslateRequest input)
