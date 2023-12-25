@@ -5,13 +5,22 @@ using Apps.AIUtilities.Models.Request.Prompts;
 using Apps.AIUtilities.Models.Response.Prompts;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.AIUtilities.Actions;
 
 [ActionList]
 public class PromptActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public PromptActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
     private const string PromptSeparator = ";;";
 
     [Action("Summary prompt", Description = "Get prompt for summarizing text")]
@@ -100,7 +109,7 @@ public class PromptActions
     public PromptResponse GetLocalizableContentFromImage()
         => new(Prompts.GetLocalizableContentFromImage);
 
-    private string? BuildPromptFromInputs(string? text, File? textFile)
+    private async Task<string>? BuildPromptFromInputs(string? text, FileReference? textFile)
     {
         if (text is null && textFile is null)
             return null;
@@ -111,7 +120,12 @@ public class PromptActions
             promptTextParts.Add(text);
 
         if (textFile is not null)
-            promptTextParts.Add(Encoding.UTF8.GetString(textFile.Bytes));
+        {
+            var fileStream = await _fileManagementClient.DownloadAsync(textFile);
+            var fileBytes = await fileStream.GetByteData();
+
+            promptTextParts.Add(Encoding.UTF8.GetString(fileBytes));
+        }
 
         return string.Join(" ", promptTextParts);
     }
