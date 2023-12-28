@@ -92,6 +92,7 @@ public class PromptActions
     [Action("MQM dimension values prompt",
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form, namely the scores (between 1 and 10) of each dimension.")]
+
     public async Task<PromptResponse> MqmDimensionValues([ActionParameter] MqmRequest input)
         => new($"{(await GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem)).Prompt}{PromptSeparator}{FileFormat.Json}");
 
