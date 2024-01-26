@@ -7,6 +7,7 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.AIUtilities.Actions;
@@ -46,11 +47,15 @@ public class PromptActions
 
     [Action("Post-edit MT prompt",
         Description = "Get prompt for reviewing MT translated text and generating a post-edited version")]
-    public async Task<PromptResponse> PostEditMt([ActionParameter] PostEditMtRequest input)
+    public async Task<PromptResponse> PostEditMt([ActionParameter] PostEditMtRequest input,
+        [ActionParameter] GlossaryRequest glossary)
     {
-        var systemPrompt = input.AdditionalPrompt is null
-            ? Prompts.PostEditMtSystem
+        var systemPrompt = input.AdditionalPrompt is null 
+            ? Prompts.PostEditMtSystem 
             : $"{Prompts.PostEditMtSystem} {input.AdditionalPrompt}";
+
+        if (glossary.Glossary != null)
+            systemPrompt = $"{systemPrompt} {Prompts.PostEditMtGlossarySystem}";
 
         var sourceTextPrompt = await BuildPromptFromInputs(input.SourceText, input.SourceTextFile) ??
                                throw new("Both Source text and Source text file inputs can't be empty");
@@ -58,13 +63,18 @@ public class PromptActions
         var targetTextPrompt = await BuildPromptFromInputs(input.TargetText, input.TargetTextFile) ??
                                throw new("Both Target text and Target text file inputs can't be empty");
 
-        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt);
+        var glossaryPrompt = glossary.Glossary != null
+            ? await GetGlossaryPromptPart(glossary.Glossary)
+            : string.Empty;
+        
+        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt, glossaryPrompt);
         return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 
     [Action("Find translation issues prompt",
         Description = "Get prompt for reviewing text translation and generating a comment with the issue description")]
-    public async Task<PromptResponse> FindTranslationIssues([ActionParameter] TranslationRequest input)
+    public async Task<PromptResponse> FindTranslationIssues([ActionParameter] TranslationRequest input,
+        [ActionParameter] GlossaryRequest glossary)
     {
         var sourceLanguagePart = input.SourceLanguage != null ? $"written in {input.SourceLanguage} " : string.Empty;
         var targetLanguagePart = input.TargetLanguage != null ? $"written in {input.TargetLanguage}" : string.Empty;
@@ -72,6 +82,9 @@ public class PromptActions
 
         if (input.AdditionalPrompt != null)
             systemPrompt = $"{systemPrompt} {input.AdditionalPrompt}";
+        
+        if (glossary.Glossary != null)
+            systemPrompt = $"{systemPrompt} {Prompts.FindTranslationIssuesGlossarySystem}";
 
         var sourceTextPrompt = await BuildPromptFromInputs(input.SourceText, input.SourceTextFile) ??
                                throw new("Both Source text and Source text file inputs can't be empty");
@@ -79,30 +92,41 @@ public class PromptActions
         var targetTextPrompt = await BuildPromptFromInputs(input.TargetText, input.TargetTextFile) ??
                                throw new("Both Target text and Target text file inputs can't be empty");
 
-        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt);
+        var glossaryPrompt = glossary.Glossary != null
+            ? await GetGlossaryPromptPart(glossary.Glossary)
+            : string.Empty;
+
+        var userPrompt = string.Format(Prompts.TranslationReview, sourceTextPrompt, targetTextPrompt, glossaryPrompt);
         return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
     }
 
     [Action("MQM report prompt",
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form.")]
-    public Task<PromptResponse> MqmReport([ActionParameter] MqmRequest input)
-        => GetMqmPrompt(input, Prompts.MqmReportSystem);
+    public Task<PromptResponse> MqmReport([ActionParameter] MqmRequest input, 
+        [ActionParameter] GlossaryRequest glossary)
+        => GetMqmPrompt(input, Prompts.MqmReportSystem, glossary.Glossary);
 
     [Action("MQM dimension values prompt",
         Description =
             "Get prompt for performing an LQA Analysis of the translation. The result will be in the MQM framework form, namely the scores (between 1 and 10) of each dimension.")]
 
-    public async Task<PromptResponse> MqmDimensionValues([ActionParameter] MqmRequest input)
-        => new($"{(await GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem)).Prompt}{PromptSeparator}{FileFormat.Json}");
+    public async Task<PromptResponse> MqmDimensionValues([ActionParameter] MqmRequest input, 
+        [ActionParameter] GlossaryRequest glossary)
+        => new($"{(await GetMqmPrompt(input, Prompts.MqmDimensionValuesSystem, glossary.Glossary)).Prompt}{PromptSeparator}{FileFormat.Json}");
 
     [Action("Translate prompt", Description = "Get prompt for localizing the provided text")]
-    public async Task<PromptResponse> Translate([ActionParameter] TranslateRequest input)
+    public async Task<PromptResponse> Translate([ActionParameter] TranslateRequest input, 
+        [ActionParameter] GlossaryRequest glossary)
     {
         var textPrompt = await BuildPromptFromInputs(input.Text, input.TextFile) ??
                          throw new("Both Text and Text file inputs can't be empty");
 
-        return new(string.Format(Prompts.Translate, textPrompt, input.Locale));
+        var glossaryPrompt = glossary.Glossary != null
+            ? string.Format(Prompts.TranslateGlossaryPart, await GetGlossaryPromptPart(glossary.Glossary))
+            : string.Empty;
+        
+        return new(string.Format(Prompts.Translate, textPrompt, input.Locale, glossaryPrompt));
     }
 
     [Action("Get localizable content from image prompt",
@@ -131,11 +155,14 @@ public class PromptActions
         return string.Join(" ", promptTextParts);
     }
 
-    private async Task<PromptResponse> GetMqmPrompt(MqmRequest input, string systemPromptPart)
+    private async Task<PromptResponse> GetMqmPrompt(MqmRequest input, string systemPromptPart, FileReference? glossary)
     {
         var systemPrompt = input.AdditionalPrompt is null
             ? systemPromptPart
             : $"{systemPromptPart} {input.AdditionalPrompt}";
+
+        if (glossary != null)
+            systemPrompt = $"{systemPrompt} {Prompts.MqmGlossarySystem}";
 
         var sourceTextPrompt = await BuildPromptFromInputs(input.SourceText, input.SourceTextFile) ??
                                throw new("Both Source text and Source text file inputs can't be empty");
@@ -148,10 +175,39 @@ public class PromptActions
         var targetAudiencePrompt = input.TargetAudience != null
             ? $" The target audience is {input.TargetAudience}"
             : string.Empty;
+        var glossaryPrompt = glossary != null
+            ? await GetGlossaryPromptPart(glossary)
+            : string.Empty;
 
         var userPrompt = string.Format(Prompts.MqmUser, sourceLanguagePrompt, sourceTextPrompt, targetTextPrompt,
-            targetLanguagePrompt, targetAudiencePrompt);
+            targetLanguagePrompt, targetAudiencePrompt, glossaryPrompt);
 
         return new(string.Join(PromptSeparator, systemPrompt, userPrompt));
+    }
+    
+    private async Task<string> GetGlossaryPromptPart(FileReference glossary)
+    {
+        var glossaryStream = await _fileManagementClient.DownloadAsync(glossary);
+        var blackbirdGlossary = await glossaryStream.ConvertFromTBX();
+
+        var glossaryPromptPart = new StringBuilder();
+        glossaryPromptPart.AppendLine();
+        glossaryPromptPart.AppendLine();
+        glossaryPromptPart.AppendLine("Glossary entries (each entry includes terms in different language. Each " +
+                                      "language may have a few synonymous variations which are separated by |):");
+
+        foreach (var entry in blackbirdGlossary.ConceptEntries)
+        {
+            glossaryPromptPart.AppendLine();
+            glossaryPromptPart.AppendLine("\tEntry:");
+                
+            foreach (var section in entry.LanguageSections)
+            {
+                glossaryPromptPart.AppendLine(
+                    $"\t\t{section.LanguageCode}: {string.Join('|', section.Terms.Select(term => term.Term))}");
+            }
+        }
+
+        return glossaryPromptPart.ToString();
     }
 }

@@ -28,18 +28,30 @@ public static class Prompts
         "target text and respond with edits of the target text as necessary. If no edits required, " +
         "respond with target text.";
 
+    public const string PostEditMtGlossarySystem =
+        "Enhance the target text by incorporating relevant terms from our glossary where applicable, " +
+        "ensuring alignment with glossary entries for respective languages, considering variations or " +
+        "synonyms, and choosing the most appropriate translation for consistency and precision. If the " +
+        "translation already aligns with the glossary, no edits are required.";
+
     public const string TranslationReview = @"
             Source text: 
             {0}
 
             Target text: 
             {1}
+            {2}
         ";
 
     public const string FindTranslationIssuesSystem =
         "You are receiving a source text {0}that was translated by NMT into target text {1}. " +
         "Review the target text and respond with the issue description.";
 
+    public const string FindTranslationIssuesGlossarySystem =
+        "Ensure that the translation aligns with the glossary entries provided for the respective " +
+        "languages, and note any discrepancies, ambiguities, or incorrect usage of terms. Include " +
+        "these observations in the issues description.";
+ 
     public const string MqmReportSystem =
         "Perform an LQA analysis and use the MQM error typology format using all 7 dimensions. " +
         "Here is a brief description of the seven high-level error type dimensions: " +
@@ -54,7 +66,7 @@ public static class Prompts
         "Try to propose a fixed translation that would have no LQA errors. " +
         "Formatting: use line spacing between each category. The category name should be bold.";
 
-    public const string MqmUser = "{0}\"{1}\" was translated as \"{2}\"{3}.{4}";
+    public const string MqmUser = "{0}\"{1}\" was translated as \"{2}\"{3}.{4}{5}";
 
     public const string MqmDimensionValuesSystem =
         "Perform an LQA analysis and use the MQM error typology format using all 7 dimensions. " +
@@ -71,11 +83,25 @@ public static class Prompts
         "The response should be in the following json format: " +
         "{\r\n  \"terminology\": 0,\r\n  \"accuracy\": 0,\r\n  \"linguistic_conventions\": 0,\r\n  \"style\": 0,\r\n  \"locale_conventions\": 0,\r\n  \"audience_appropriateness\": 0,\r\n  \"design_and_markup\": 0,\r\n  \"proposed_translation\": \"fixed translation\"\r\n}";
 
+    public const string MqmGlossarySystem = 
+        "Use the provided glossary entries for the respective languages. If there are discrepancies between the " +
+        "translation and glossary, reduce the score in the 'Terminology' part of the report respectively and note " +
+        "them in the 'Terminology' part of the report if required, along with terminology problems not related " +
+        "to the glossary.";
+    
     public const string Translate = @"
                     Original text: {0}
                     Locale: {1}
+                    {2}
                     Localized text:
                     ";
+
+    public const string TranslateGlossaryPart =
+        "\nEnhance the localized text by incorporating relevant terms from our glossary where applicable. " +
+        "If you encounter terms from the glossary in the text, ensure that the localized text aligns " +
+        "with the glossary entries for the respective languages. If a term has variations or synonyms, " +
+        "consider them and choose the most appropriate translation from the glossary to maintain " +
+        "consistency and precision. {0}";
 
     public const string GetLocalizableContentFromImage =
         "Your objective is to conduct optical character recognition (OCR) to identify and extract any " +
