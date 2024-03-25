@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Product>AI Utilities</Product>
-        <Description>Utilities that can be used in conjunction with different AI apps</Description>
+        <Product>Blackbird Prompts</Product>
+        <Description>Pre-engineered prompts that can be used in conjunction with different AI apps</Description>
         <Version>1.2.0</Version>
         <AssemblyName>Apps.AIUtilities</AssemblyName>
     </PropertyGroup>
