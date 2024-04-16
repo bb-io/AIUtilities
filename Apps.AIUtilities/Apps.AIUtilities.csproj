@@ -6,12 +6,12 @@
         <Nullable>enable</Nullable>
         <Product>Blackbird Prompts</Product>
         <Description>Pre-engineered prompts that can be used in conjunction with different AI apps</Description>
-        <Version>1.2.1</Version>
+        <Version>1.2.2</Version>
         <AssemblyName>Apps.AIUtilities</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1" />
+        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0"/>
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
         <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha11" />
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.22" />
