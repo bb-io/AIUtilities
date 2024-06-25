@@ -6,18 +6,20 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 <!-- begin docs -->
 
+Blackbird Prompts is a collection of pre-engineered prompts designed to work seamlessly with any AI model of your choice.
+
 ## Actions
 
 ### Interpret
--**Interpret MQM Analysis** Interpret AI response of MQM analysis
+- **Interpret MQM Analysis** Interpret AI response of MQM analysis
 
 ### Prompt
--**Summary prompt** Get prompt for summarizing text
--**Generate edit prompt** Get prompt for editing the input text given an instructions
--**Post-edit MT prompt** Get prompt for reviewing MT translated text and generating a post-edited version
--**Find translation issues prompt** Get prompt for reviewing text translation and generating a comment with the issue description
--**Translate prompt** Get prompt for localizing the provided text
--**Get localizable content from image prompt** Get prompt for retrieving localizable content from image
+- **Summary prompt** Get prompt for summarizing text
+- **Generate edit prompt** Get prompt for editing the input text given an instructions
+- **Post-edit MT prompt** Get prompt for reviewing MT translated text and generating a post-edited version
+- **Find translation issues prompt** Get prompt for reviewing text translation and generating a comment with the issue description
+- **Translate prompt** Get prompt for localizing the provided text
+- **Get localizable content from image prompt** Get prompt for retrieving localizable content from image
 
 ## Feedback
 
