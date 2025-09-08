@@ -6,10 +6,10 @@ namespace Apps.AIUtilities.Models.Request.Prompts;
 public class PostEditMtRequest
 {
     [Display("Source text")]
-    public string SourceText { get; set; }
+    public string? SourceText { get; set; }
     
     [Display("Source text file")]
-    public FileReference SourceTextFile { get; set; }
+    public FileReference? SourceTextFile { get; set; }
     
     [Display("Target text")]
     public string? TargetText { get; set; }

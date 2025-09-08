@@ -126,7 +126,7 @@ public class PromptActions
 
     private async Task<string?> BuildPromptFromInputs(string? text, FileReference? textFile) 
     {
-        if (string.IsNullOrEmpty(text) || textFile is null)
+        if (string.IsNullOrEmpty(text) && textFile is null)
             throw new PluginMisconfigurationException("Both Text and Text file inputs can't be empty");
 
         var promptTextParts = new List<string>();
