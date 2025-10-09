@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Apps.AIUtilities.Actions;
 
-[ActionList]
+[ActionList("Interpret")]
 public class InterpretActions
 {
     [Action("Interpret MQM Analysis", Description = "Interpret AI response of MQM analysis")]

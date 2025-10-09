@@ -13,16 +13,9 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.AIUtilities.Actions;
 
-[ActionList]
-public class PromptActions 
+[ActionList("Prompts")]
+public class PromptActions(IFileManagementClient fileManagementClient)
 {
-    private readonly IFileManagementClient _fileManagementClient;
-
-    public PromptActions(IFileManagementClient fileManagementClient) 
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
     private const string PromptSeparator = ";;";
 
     [Action("Summary prompt", Description = "Get prompt for summarizing text")]
@@ -136,7 +129,7 @@ public class PromptActions
 
         if (textFile is not null) 
         {
-            var fileStream = await _fileManagementClient.DownloadAsync(textFile);
+            var fileStream = await fileManagementClient.DownloadAsync(textFile);
             var fileBytes = await fileStream.GetByteData();
 
             promptTextParts.Add(Encoding.UTF8.GetString(fileBytes));
@@ -174,7 +167,7 @@ public class PromptActions
 
     private async Task<string> GetGlossaryPromptPart(FileReference glossary) 
     {
-        var glossaryStream = await _fileManagementClient.DownloadAsync(glossary);
+        var glossaryStream = await fileManagementClient.DownloadAsync(glossary);
         var blackbirdGlossary = await glossaryStream.ConvertFromTBX();
 
         var glossaryPromptPart = new StringBuilder();
