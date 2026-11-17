@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Product>Blackbird Prompts</Product>
         <Description>Pre-engineered prompts that can be used in conjunction with different AI apps</Description>
-        <Version>1.2.6</Version>
+        <Version>1.2.7</Version>
         <AssemblyName>Apps.AIUtilities</AssemblyName>
     </PropertyGroup>
 
@@ -21,4 +21,7 @@
         <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="..\README.md" Link="README.md" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 </Project>
